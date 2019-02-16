@@ -1,0 +1,119 @@
+//missing java packages, 
+import java.util.*;
+import javax.swing.*;
+import java.awt.event.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.io.*;
+
+
+/** BouncingShape represents a shape that can move around a window.
+    The shape must store its current state, and the canvas it is drawn on.
+    The state must include the current position, and the current speed (the size
+    of step that it will take in the x direction and the size of the step it will
+    take in the y direction on each move).
+
+    It has a method to make it move from its current position.
+     Every time it moves, it will change its size, shape, or colour a little
+    It also has methods that return its current position.
+ */
+
+public class BouncingShape{
+  // Fields to store the canvas and the state (position, speed, etc) of the shape
+  // YOUR CODE HERE
+  private DrawingCanvas canvas;
+
+  private double x;   // position must be stored as double to keep accuracy.
+  private double y;   // position must be stored as double to keep accuracy.
+  private int limit;   // size of the canvas
+  
+  private double stepX = 0.9;  // how much the shape steps in the x direction
+  private double stepY = 0.7;  // how much the shape steps in the y direction
+
+           
+  private int size = 20;
+  private boolean gettingLarger = true;
+           
+  private int red = (int)(Math.random()*255);   // components of the current colour (in range 0-255)
+  private int green = 0;
+  private int blue = (int)(Math.random()*255);
+  private Color colour;
+  // END OF YOUR CODE
+
+  // Constructor
+  /** Construct a new BouncingShape object.
+      Parameters are the initial position, the size of the window, and the drawing canvas
+      Needs to store the parameters into the fields, and then draw the shape
+      (by calling the draw method).
+   */
+  public BouncingShape(int x, int y, int limit, DrawingCanvas c){
+    // YOUR CODE HERE
+    this.x = x;
+    this.y = y;
+    this.limit = limit;
+    this.canvas = c;
+
+    this.draw();
+    // END OF YOUR CODE
+  }
+
+
+  // Methods
+
+  /** Move the shape by one step.
+      It should erase itself (call erase()),
+      then change the value of its position (and maybe the other state values)
+      and then draw itself again (call draw()).
+      If it hits the edge of the canvas (the x or y position is less than 0 or greater than the limit)
+      then it should change its speed (step sizes) to move back into the canvas. */
+  public void move(){
+    this.erase();
+    // YOUR CODE HERE
+
+    this.x = this.x + this.stepX;
+    this.y = this.y + this.stepY;
+
+    if (this.x < 0) this.stepX = 1.5;
+    if (this.x > this.limit - this.size) this.stepX = -2.1;
+    if (this.y < 0) this.stepY = 2.8;
+    if (this.y > this.limit - this.size-20) this.stepY = -1.9;
+
+    if (this.size > 100) this.gettingLarger = false;
+    if (this.size < 10) this.gettingLarger = true;
+    if (this.gettingLarger){
+      this.size = this.size+1;
+    }
+    else {
+      this.size = this.size-1;
+    }
+
+    red = red+1;
+    if (this.red > 254) this.red = 0;
+    
+    blue = blue+1;
+    if (this.blue > 254) this.blue = 0;
+    
+    this.colour= new Color(this.red, this.green, this.blue);
+    // END OF YOUR CODE
+    
+    this.draw();
+  }
+
+
+  /** Erase the rectangle containing the shape */
+  public void erase(){
+    // YOUR CODE HERE
+    this.canvas.clearRect((int)this.x, (int)this.y, this.size+1, this.size+1, false);
+    // END OF YOUR CODE
+  }
+  
+  /** Draw the shape on the canvas in its current position */
+  public void draw(){
+    // YOUR CODE HERE
+    this.canvas.setForeground(this.colour);
+    this.canvas.fillOval((int)this.x, (int)this.y, this.size, this.size,false);
+    // END OF YOUR CODE
+  }
+
+
+}
